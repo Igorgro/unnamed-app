@@ -1,0 +1,24 @@
+{
+  "name": "typeorm-test",
+  "version": "1.0.0",
+  "description": "Test app with typeorm",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "author": "Igor Mahov",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^14.14.31",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
+    "eslint": "^7.20.0",
+    "typescript": "^4.1.5"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "pg": "^8.5.1",
+    "typeorm": "^0.2.31"
+  }
+}
