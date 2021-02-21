@@ -1,6 +1,7 @@
 import { createConnection, Connection, ConnectionOptions } from 'typeorm';
 
 import { UserController } from './controllers/user';
+import { TokenEntity } from './entities/token';
 import { UserEntity } from './entities/user';
 
 interface DatabaseOptions {
@@ -26,7 +27,8 @@ class Database {
             password: options.password,
             database: options.database,
             entities: [
-                UserEntity
+                UserEntity,
+                TokenEntity
             ],
             synchronize: true,
             logging: false

@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Role } from '../../types';
+import { TokenEntity } from './token';
 
 @Entity()
 export class UserEntity {
@@ -20,4 +21,7 @@ export class UserEntity {
         enum: Role
     })
     role!: Role
+
+    @OneToMany(type => TokenEntity, token => token.user)
+    tokens!: TokenEntity[]
 }

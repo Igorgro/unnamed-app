@@ -10,12 +10,17 @@ export class UserController {
     }
 
     async registerUser(user: User): Promise<UserEntity> {
-        const passHash = '1234' + user.password;
         return await this._rep.save(this._rep.create({
             email: user.email,
             username: user.username,
-            passHash,
+            passHash: user.passwordHash,
             role: Role.USER
         }));
+    }
+
+    async getUserByUsername(username: string): Promise<UserEntity | undefined> {
+        return await this._rep.findOne({
+            username
+        });
     }
 }
