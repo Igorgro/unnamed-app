@@ -1,15 +1,12 @@
-export interface BasicResponse {
-    code: 200 | 400| 401
-    message: string
-}
-
-
-export interface RegisterInfo {
+export interface UserInfo {
     firstName: string
     lastName: string
     username: string
-    password: string
+}
+
+export interface RegisterInfo extends UserInfo {
     email: string
+    password: string
 }
 
 export interface LoginInfo {

@@ -1,7 +1,9 @@
 import React from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
-import { AppBar } from './appbar';
+import { LoginInfo, RegisterInfo, UserInfo } from './types';
+
+import AppBar from './appbar';
 import LoginDialog from './logindialog';
 import RegisterDialog from './registerdialog';
 
@@ -23,6 +25,9 @@ const theme = createMuiTheme({
 });
 
 interface AppState {
+    dataLoaded: boolean
+    userInfo: UserInfo | undefined
+
     loginDialogOpen: boolean
     registerDialogOpen: boolean
     /**
@@ -37,6 +42,8 @@ export class App extends React.Component<unknown, AppState> {
         super(props);
 
         this.state = {
+            dataLoaded: false,
+            userInfo: undefined,
             loginDialogOpen: false,
             registerDialogOpen: false,
             currentLoginState: false,
@@ -51,24 +58,39 @@ export class App extends React.Component<unknown, AppState> {
         this.onRegisterCanceled = this.onRegisterCanceled.bind(this);
     }
 
+    async componentDidMount(): Promise<void> {
+        if (!this.state.dataLoaded) {
+            const profileResponse = await fetch('/api/user/profile');
+            this.setState({ dataLoaded: true });
+            if (profileResponse.status == 200) {
+                const profile: UserInfo = await profileResponse.json();
+
+                this.setState({
+                    userInfo: {
+                        firstName: profile.firstName,
+                        lastName: profile.lastName,
+                        username: profile.username
+                    }
+                });
+            }
+        }
+    }
+
     onLoginRequested(): void {
         this.setState({
             loginDialogOpen: true
         });
     }
 
-    async onLogin(username: string, password: string): Promise<void> {
+    async onLogin(loginInfo: LoginInfo): Promise<void> {
         const loginResponse = await fetch(
-            '/api/login',
+            '/api/auth/login',
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    username,
-                    password
-                })
+                body: JSON.stringify(loginInfo)
             }
         );
         const data = await loginResponse.json();
@@ -89,19 +111,15 @@ export class App extends React.Component<unknown, AppState> {
         });
     }
 
-    async onRegister(username: string, email: string, password: string): Promise<void> {
+    async onRegister(registerInfo: RegisterInfo): Promise<void> {
         const registerResponse = await fetch(
-            '/api/register',
+            '/api/auth/register',
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    username,
-                    email,
-                    password
-                })
+                body: JSON.stringify(registerInfo)
             }
         );
         const data = await registerResponse.json();
@@ -119,6 +137,7 @@ export class App extends React.Component<unknown, AppState> {
         return (
             <ThemeProvider theme={theme}>
                 <AppBar
+                    userInfo={this.state.userInfo}
                     onLoginRequested={this.onLoginRequested}
                     onRegisterRequested={this.onRegisterRequested}/>
                 <LoginDialog

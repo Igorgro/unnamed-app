@@ -37,7 +37,7 @@ class Database {
 
     async initialize(): Promise<void> {
         this._conn = await createConnection(this._options);
-        this._userController = new UserController(this._conn.getRepository(UserEntity));
+        this._userController = new UserController(this._conn.getRepository(UserEntity), this._conn.getRepository(TokenEntity));
     }
 
     getUserController(): UserController {

@@ -7,8 +7,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import { LoginInfo } from './types';
+
 interface LoginDialogProps {
-    onLogin: (username: string, password: string) => Promise<void>
+    onLogin: (loginInfo: LoginInfo) => Promise<void>
     onLoginCanceled: () => void
     open: boolean
     hasError: boolean
@@ -34,7 +36,10 @@ export default class LoginDialog extends React.Component<LoginDialogProps, Login
     }
 
     async onLoginButtonClicked(): Promise<void> {
-        await this.props.onLogin(this.state.username, this.state.password);
+        await this.props.onLogin({
+            username: this.state.username,
+            password: this.state.password
+        });
     }
 
     onUsernameChange(event: React.ChangeEvent<HTMLInputElement>): void {

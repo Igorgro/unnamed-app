@@ -1,8 +1,10 @@
+import crypto from 'crypto';
+
 import { Response, Request } from 'express';
 import bcrypt from 'bcrypt';
 
-import { getDatabase } from '../database';
-import { BasicResponse, LoginInfo, RegisterInfo } from './types';
+import { getDatabase } from '../../database';
+import { BasicResponse, LoginInfo, RegisterInfo } from '../types';
 
 export async function loginController(req: Request<unknown, unknown, LoginInfo>, res: Response<BasicResponse>): Promise<void> {
     const db = await getDatabase();
@@ -10,6 +12,11 @@ export async function loginController(req: Request<unknown, unknown, LoginInfo>,
     const user = await db.getUserController().getUserByUsername(req.body.username);
     if(user) {
         if (await bcrypt.compare(req.body.password, user.passHash)) {
+            const token = crypto.randomBytes(32).toString('hex');
+            await db.getUserController().setTokenForUser(user, token);
+
+            res.cookie('token', token, { httpOnly: true, sameSite: 'strict' });
+
             res.statusCode = 200;
             res.send({
                 code: 200,
@@ -37,6 +44,8 @@ export async function registerController(req: Request<unknown, unknown, Register
     const db = await getDatabase();
 
     await db.getUserController().registerUser({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         username: req.body.username,
         passwordHash: await bcrypt.hash(req.body.password, await bcrypt.genSalt(2)),
         email: req.body.email
