@@ -13,6 +13,27 @@ export async function authMiddleware(req: Request<{ token: string}>, res: Respon
                 res.locals.username = user.username;
                 next();
             }
+            else {
+                res.statusCode = 401;
+                res.send({
+                    code: 401,
+                    message: 'Unauthorized'
+                });
+            }
         }
+        else {
+            res.statusCode = 401;
+            res.send({
+                code: 401,
+                message: 'Unauthorized'
+            });
+        }
+    }
+    else {
+        res.statusCode = 401;
+        res.send({
+            code: 401,
+            message: 'Unauthorized'
+        });
     }
 }
