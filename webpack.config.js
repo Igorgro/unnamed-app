@@ -14,7 +14,11 @@ const frontConfig = {
     },
     module : {
         rules : [
-            {test : /\.[jt]sx?$/, use:'babel-loader'},
+            {
+                test : /\.[jt]sx?$/,
+                exclude: /node_modules/,
+                use:'babel-loader'
+            },
             {test : /\.css$/, use:['style-loader', 'css-loader']},
             {
                 test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
@@ -49,7 +53,11 @@ const backConfig = {
     },
     module : {
         rules : [
-            {test : /\.[jt]s$/, use:'babel-loader'}
+            {
+                test : /\.[jt]s$/,
+                exclude: /node_modules/,
+                use:'babel-loader'
+            }
         ]
     },
     target: 'node',

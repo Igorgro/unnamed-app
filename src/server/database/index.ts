@@ -53,14 +53,19 @@ let database: Database;
 
 export async function getDatabase(): Promise<Database> {
     if (!database) {
-        database = new Database({
-            host: process.env.DB_HOST || 'localhost',
-            port: parseInt(process.env.DB_PORT || '5432'),
-            username: process.env.DB_USER || 'postgres',
-            password: process.env.DB_PASS || '',
-            database: process.env.DB_NAME || 'postgres'
-        });
-        await database.initialize();
+        try {
+            database = new Database({
+                host: process.env.DB_HOST || 'localhost',
+                port: parseInt(process.env.DB_PORT || '5432'),
+                username: process.env.DB_USER || 'postgres',
+                password: process.env.DB_PASS || '',
+                database: process.env.DB_NAME || 'postgres'
+            });
+            await database.initialize();
+        }
+        catch {
+            console.log('Error connect to database');
+        }
     }
     return database;
 }
